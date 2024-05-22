@@ -1,0 +1,220 @@
+%import common.CNAME
+%import common.ESCAPED_STRING
+%import common.SH_COMMENT
+%import common.WS
+%import common.SIGNED_INT
+%import common.SIGNED_NUMBER
+%import common.HEXDIGIT
+
+%ignore WS
+%ignore SH_COMMENT
+
+// keywords
+_TYPE: "type"
+
+// names
+id: CNAME
+
+// values
+
+v_bool:   "true" | "false"
+v_int:    SIGNED_INT
+v_float:  SIGNED_NUMBER
+v_string: ESCAPED_STRING
+v_bytes:  "0x" HEXDIGIT HEXDIGIT*
+v_null:   "null"
+v_list:   "[" [value ("," value)*] "]"
+v_tuple:  "(" [value ("," value)*] ")"
+v_map:    "{" [id ":" value ("," id ":" value)*] "}"
+
+value: v_bool
+  | v_int
+  | v_float
+  | v_string
+  | v_bytes
+  | v_null
+  | v_list
+  | v_tuple
+  | v_map
+
+// typekinds
+
+_TK_BOOL: "bool"
+_TK_INT: "int"
+_TK_FLOAT: "float"
+_TK_STRING: "string"
+_TK_BYTES: "bytes"
+_TK_NULL: "null"
+_TK_MAP: "map"
+
+_TK_ENUM:   "enum"
+_TK_STRUCT: "struct"
+_TK_UNION:  "union"
+
+typekind: _TK_BOOL
+  | _TK_INT
+  | _TK_FLOAT
+  | _TK_STRING
+  | _TK_BYTES
+  | _TK_NULL
+  | _TK_MAP
+  | _TK_ENUM
+  | _TK_STRUCT
+  | _TK_UNION
+
+// kinds
+
+_K_BOOL: "Bool"
+_K_INT: "Int"
+_K_FLOAT: "Float"
+_K_STRING: "String"
+_K_BYTES: "Bytes"
+_K_NULL: "Null"
+_K_TUPLE: "Tuple"
+K_TYPE: CNAME
+
+kind: _K_BOOL
+  | _K_INT
+  | _K_FLOAT
+  | _K_STRING
+  | _K_BYTES
+  | _K_NULL
+  | _K_TUPLE
+  |  K_TYPE
+
+// python types
+
+bool:    _TK_BOOL   | _K_BOOL
+int:     _TK_INT    | _K_INT
+float:   _TK_FLOAT  | _K_FLOAT
+str:     _TK_STRING | _K_STRING
+bytes:   _TK_BYTES  | _K_BYTES
+null:    _TK_NULL   | _K_NULL
+tuple:                _K_TUPLE
+typedef:               K_TYPE
+map:     _TK_MAP
+enum:    _TK_ENUM
+struct:  _TK_STRUCT
+union:   _TK_UNION
+
+list: "[" type "]"
+dict: "{" type ":" type "}"
+
+type: bool
+  | int
+  | float
+  | str
+  | bytes
+  | null
+  | tuple
+  | typedef
+  | map
+  | enum
+  | struct
+  | union
+  | list
+  | dict
+
+// type changes
+
+NULLABLE: "nullable"
+OPTIONAL: "optional"
+type_change: NULLABLE
+  | OPTIONAL
+
+// inline representation changes
+
+RENAME: "rename"
+IMPLICIT: "implicit"
+repr_change_type: RENAME
+  | IMPLICIT
+repr_change: "(" (repr_change_type value)* ")"
+
+// type representations
+
+_REPR: "representation"
+
+_MAP: "map"
+_TUPLE: "tuple"
+_STRINGPAIRS: "stringpairs"
+_STRINGJOIN: "stringjoin"
+_LISTPAIRS: "listpairs"
+_KEYED: "keyed"
+_KINDED: "kinded"
+_ENVELOPE: "envelope"
+_INLINE: "inline"
+_BYTESPREFIX: "bytesprefix"
+_STRING: "string"
+_INT: "int"
+
+map_repr: _MAP
+listpairs_repr: _LISTPAIRS
+keyed_repr: _KEYED
+kinded_repr: _KINDED
+bytesprefix_repr: _BYTESPREFIX
+string_repr: _STRING
+int_repr: _INT
+
+field_order: ESCAPED_STRING
+_tuple_arguments: "fieldOrder" "[" field_order ("," field_order)* "]"
+tuple_repr: _TUPLE ["{" _tuple_arguments? "}"]
+
+inner_delim: "innerDelim" ESCAPED_STRING
+entry_delim: "entryDelim" ESCAPED_STRING
+_stringpairs_arguments: inner_delim
+  | entry_delim
+stringpairs_repr: _STRINGPAIRS ["{" _stringpairs_arguments* "}"]
+
+join: ESCAPED_STRING
+_stringjoin_arguments: "join" join
+stringjoin_repr: _STRINGJOIN ["{" _stringjoin_arguments? "}"]
+
+discriminant_key: ESCAPED_STRING
+content_key: ESCAPED_STRING
+_envelope_arguments: "discriminantKey" discriminant_key
+  | "contentKey" content_key
+envelope_repr: _ENVELOPE ["{" _envelope_arguments* "}"]
+
+_inline_arguments: "discriminantKey" discriminant_key
+inline_repr: _INLINE ["{" _inline_arguments "}"]
+
+struct_repr_def: map_repr
+  | tuple_repr
+  | stringpairs_repr
+  | stringjoin_repr
+  | listpairs_repr
+map_repr_def: map_repr
+  | stringpairs_repr
+  | listpairs_repr
+union_repr_def: keyed_repr
+  | kinded_repr
+  | envelope_repr
+  | inline_repr
+  | bytesprefix_repr
+enum_repr_def: string_repr
+  | int_repr
+
+// type declarations
+
+typed_kind: _TYPE id type
+
+struct_field: id type_change* type [repr_change]
+struct_declaration: _TYPE id "struct" "{" struct_field* "}" [_REPR struct_repr_def]
+
+union_field: "|" type (type | ESCAPED_STRING)
+union_declaration: _TYPE id "union" "{" union_field* "}" [_REPR union_repr_def]
+
+enum_field: "|" id type
+enum_declaration: _TYPE id "enum" "{" enum_field* "}" [_REPR enum_repr_def]
+
+_type_declaration: typed_kind
+  | struct_declaration
+  | union_declaration
+  | enum_declaration
+
+// top-level
+
+_line: _type_declaration
+  | SH_COMMENT
+
+start: _line*

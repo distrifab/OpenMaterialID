@@ -1,0 +1,158 @@
+#
+# OpenMaterialID specification
+# IPLD Schema
+# Version 0.0.2
+#
+
+# Unique spool IDs
+# https://pfil.us/view.php?i=8357-ZDA2
+# https://prusament.com/spool/?spoolId=3abe4ae4
+
+# Datasheets
+# https://storage.googleapis.com/prusa3d-content-prod-14e8-wordpress-prusament-prod/2023/10/9f8d2165-tds_prusament-petg_n_en.pdf
+# https://francofil.fr/wp-content/uploads/2023/12/Fiche-technique-PLA.pdf
+# https://s3.amazonaws.com/mf.product.doc.images/Datasheets/Material+Datasheets/CompositesMaterialDatasheet.pdf
+
+type Shore struct {
+  durometer Int    (rename "d")
+  scale     String (rename "s")
+}
+
+type Abrasiveness  int
+# | Index    | Filament Abrasiveness    | Nozzle Material Recommendation    |
+# |----------|--------------------------|-----------------------------------|
+# | 0 - 5    | Non-abrasive             | Brass                             |
+# | 6 - 10   | Slightly abrasive        | Hardened steel or stainless steel |
+# | 11 - 20  | Moderately abrasive      | Hardened steel or stainless steel |
+# | 21 - 40  | Highly abrasive          | Tungsten carbide                  |
+# | 41+      | Very abrasive            | Silicon carbide or ruby           |
+
+type Certification string
+type Color         int
+type Date          int
+type Density       float
+type EnergyArea    float
+type MPa           float
+type OLC           string
+type Percentage    float
+type SizeMM        float
+type SizeM         float
+type Temperature   float
+type URL           string
+type WeightG       float
+type WID           string
+
+type Product struct {
+  manufacturer                    String         (rename "mn")
+  name                            String         (rename "n")
+  sku                   optional  String         (rename "s")
+  color_name                      String         (rename "cn")
+  color_hex             optional  Color          (rename "ch")
+  manufacturing_method  optional  WID            (rename "mm")
+  certifications        optional [Certification] (rename "c")
+  additional_data       optional  URL            (rename "a")
+}
+
+type Characteristics struct {
+  diameter                        SizeMM  (rename "d")
+  diameter_tolerance    optional  SizeMM  (rename "dt")
+  nominal_weight                  WeightG (rename "w")
+}
+
+type ManufacturingData struct {
+  batch_id              optional  String     (rename "b")
+  product_id            optional  String     (rename "p")
+  manufacture_date      optional  Date       (rename "md")
+  manufacture_location  optional  OLC        (rename "ml")
+  measured_weight       optional  WeightG    (rename "w")
+  measured_length       optional  SizeM      (rename "l")
+  measured_tolerance    optional  SizeMM     (rename "t")
+  standard_deviation    optional  Float      (rename "d")
+  ovality               optional  Percentage (rename "o")
+}
+
+# type ISO527_1 struct {
+#   tensile_strength      optional  MPa
+#   elongation_at_break   optional  Percentage
+#   yield_strength        optional  MPa
+#   modulus_elasticity    optional  MPa
+#   stress_break          optional  MPa
+#   stress_yield          optional  MPa
+# }
+
+# type ISO178 struct {
+#   flexural_strength      optional  MPa
+#   flexural_modulus       optional  MPa
+#   flexural_strain        optional  Percentage
+#   deflection_at_break    optional  Percentage
+# }
+
+# type ISO179_1 struct {
+#   impact_strength         optional  EnergyArea
+#   notched_impact_strength optional  EnergyArea
+# }
+
+type Properties struct {
+  denomination                     WID          (rename "dn")
+  additional_components  optional [WID]         (rename "ac")
+  properties             optional [WID]         (rename "p")
+
+  density                          Density      (rename "ds")
+  abrasiveness           optional  Abrasiveness (rename "a")
+  min_extrusion_diameter optional  SizeMM       (rename "md")
+  hardness               optional  Shore        (rename "h")
+  melt_flow_rate         optional  Float        (rename "mfr")
+
+  glass_transition       optional  Temperature  (rename "gt")
+  melting_point          optional  Temperature  (rename "mp")
+  water_absorption       optional  Percentage   (rename "wa")
+  resistivity            optional  Float        (rename "r")
+
+  # tensile                optional  ISO527_1
+  # flexural               optional  ISO178
+  # compressive            optional  DeformationResistance
+  # charpy_impact          optional  ISO179_1
+
+  transmission_distance  optional  SizeMM       (rename "td")
+}
+
+type Spool struct {
+  diameter_core          optional  SizeMM  (rename "dc")
+  diameter_flange        optional  SizeMM  (rename "df")
+  width                  optional  SizeMM  (rename "w")
+  empty_weight           optional  WeightG (rename "ew")
+}
+
+type PrintSettings struct {
+  extrusion_temperature           [Temperature] (rename "e")
+  bed_temperature                 [Temperature] (rename "b")
+  material_temperature   optional [Temperature] (rename "m")
+  material_humidity      optional [Percentage]  (rename "h")
+}
+
+type Storage struct {
+  temperature            optional [Temperature] (rename "t")
+  humidity               optional [Percentage]  (rename "h")
+  nominal_shelf_life     optional  Int          (rename "l")
+}
+
+type Usage struct {
+  remaining_weight       WeightG     (implicit -1)
+  seen_date_first        Date        (implicit -1)
+  seen_date_last         Date        (implicit -1)
+  max_humidity           Percentage  (implicit -1)
+  max_temp               Temperature (implicit -1)
+  computed_density       Density     (implicit -1)
+} representation tuple
+
+type MaterialID struct {
+  version                         Int               (rename "v")
+  product                         Product           (rename "pd")
+  characteristics                 Characteristics   (rename "c")
+  manufacturing_data     optional ManufacturingData (rename "md")
+  properties                      Properties        (rename "pp")
+  spool                  optional Spool             (rename "sp")
+  print_settings                  PrintSettings     (rename "ps")
+  storage                optional Storage           (rename "st")
+  usage                           Usage             (rename "u")
+}

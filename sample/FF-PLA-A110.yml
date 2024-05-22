@@ -1,0 +1,80 @@
+version: 2
+
+product:
+  manufacturer: Francofil
+  name: Blue PLA Filament A 110
+  sku: PLA-110
+  color_name: Blue A 110
+  color_hex: 0x113EB1
+  manufacturing_method: fused_filament_fabrication
+  certifications:
+    - rohs
+    - ue:10/2011
+    - reach
+    - fda
+  additional_data: Null
+
+characteristics:
+  diameter: 1750
+  diameter_tolerance: 20
+  nominal_weight: 1000
+
+manufacturing_data:
+  batch_id: 2024-02-28-1450
+  product_id: 65491
+  manufacture_date: 1709044219
+  manufacture_location: 8FW4V83M+Q7
+  measured_weight: 1003
+  measured_length: 336
+  measured_tolerance: 20
+  standard_deviation: 200
+  ovality: 90
+
+properties:
+
+  denomination: polylactic_acid
+  additional_components:
+    - thermoplastic_polyurethane:3
+  properties:
+    - food_contact_materials
+    - biodegradation
+
+  density: 1240
+  abrasiveness: 1
+  min_extrusion_diameter: 10
+  hardness:
+    durometer: 75
+    scale: A
+  melt_flow_rate: 720
+
+  glass_transition: 575
+  melting_point: 1390
+  water_absorption: 5
+  resistivity: 6
+
+  transmission_distance: 2540
+
+spool:
+  diameter_core: 52
+  diameter_flange: 200
+  width: 55
+  empty_weight: 246
+
+print_settings:
+  extrusion_temperature: [205, 225]
+  bed_temperature: [55, 65]
+  material_temperature: [20, 30]
+  material_humidity: [5, 20]
+
+storage:
+  temperature: [15, 40]
+  humidity: [5, 70]
+  nominal_shelf_life: 365
+
+usage:
+  remaining_weight: -1
+  seen_date_first: -1
+  seen_date_last: -1
+  max_humidity: -1
+  max_temperature: -1
+  computed_density: -1
