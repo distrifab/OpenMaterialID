@@ -16,9 +16,7 @@ The `sample/FF-PLA-A110.yml` yaml file is provided as a datasource to populate t
 
 The schema will convert the data to CBOR format to be stored on an RFID chip:
 
-```
-\xa9av\x02bpd\xa8bmniFrancofilanwBlue PLA Filament A 110asgPLA-110bcnjBlue A 110bch\x1a\x00\x11>\xb1bmmx\x1afused_filament_fabricationac\x84drohsjue:10/2011ereachcfdaaa\xf6ac\xa3ad\x19\x06\xd6bdt\x14aw\x19\x03\xe8bmd\xa9abo2024-02-28-1450ap\x19\xff\xd3bmd\x1ae\xdd\xf1\xfbbmlk8FW4V83M+Q7aw\x19\x03\xebal\x19\x01Pat\x14ad\x18\xc8ao\x18Zbpp\xadbdnopolylactic_acidbac\x81x\x1cthermoplastic_polyurethane:3ap\x82vfood_contact_materialsnbiodegradationbds\x19\x04\xd8aa\x01bmd\nah\xa2ad\x18KasaAcmfr\x19\x02\xd0bgt\x19\x02?bmp\x19\x05nbwa\x05ar\x06btd\x19\t\xecbsp\xa4bdc\x184bdf\x18\xc8aw\x187bew\x18\xf6bps\xa4ae\x82\x18\xcd\x18\xe1ab\x82\x187\x18Aam\x82\x14\x18\x1eah\x82\x05\x14bst\xa3at\x82\x0f\x18(ah\x82\x05\x18Fal\x19\x01mau\xa6premaining_weight oseen_date_first nseen_date_last lmax_humidity omax_temperature pcomputed_density 
-```
+> \xa9av\x02bpd\xa8bmniFrancofilanwBlue PLA Filament A 110asgPLA-110bcnjBlue A 110bch\x1a\x00\x11>\xb1bmmx\x1afused_filament_fabricationac\x84drohsjue:10/2011ereachcfdaaa\xf6ac\xa3ad\x19\x06\xd6bdt\x14aw\x19\x03\xe8bmd\xa9abo2024-02-28-1450ap\x19\xff\xd3bmd\x1ae\xdd\xf1\xfbbmlk8FW4V83M+Q7aw\x19\x03\xebal\x19\x01Pat\x14ad\x18\xc8ao\x18Zbpp\xadbdnopolylactic_acidbac\x81x\x1cthermoplastic_polyurethane:3ap\x82vfood_contact_materialsnbiodegradationbds\x19\x04\xd8aa\x01bmd\nah\xa2ad\x18KasaAcmfr\x19\x02\xd0bgt\x19\x02?bmp\x19\x05nbwa\x05ar\x06btd\x19\t\xecbsp\xa4bdc\x184bdf\x18\xc8aw\x187bew\x18\xf6bps\xa4ae\x82\x18\xcd\x18\xe1ab\x82\x187\x18Aam\x82\x14\x18\x1eah\x82\x05\x14bst\xa3at\x82\x0f\x18(ah\x82\x05\x18Fal\x19\x01mau\xa6premaining_weight oseen_date_first nseen_date_last lmax_humidity omax_temperature pcomputed_density 
 
 This complete representation of the schema will take 560 bytes on the chip, which represents 72.92% of the available space on a 1K Mifare Classic tag. It will be stored in memory this way:
 
